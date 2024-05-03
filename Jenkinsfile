@@ -7,6 +7,7 @@ pipeline {
         string(name: 'password', defaultValue: '', description: 'Password for remote server')
         string(name: 'branch_name', defaultValue: 'main', description: 'Branch name for GitHub')
         booleanParam(name: 'delete_application', defaultValue: false, description: 'Delete application after deployment')
+        string(name: 'port_number', defaultValue: '22', description: 'Port number for SSH connection')
     }
     
     stages {
@@ -37,7 +38,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh "sshpass -p '${params.password}' scp -o StrictHostKeyChecking=no -r * ${params.username}@${params.server_dns}:."
+                    sh "sshpass -p '${params.password}' scp -o StrictHostKeyChecking=no -P ${params.port_number} -r * ${params.username}@${params.server_dns}:."
                 }
             }
         }
@@ -50,7 +51,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh "sshpass -p '${params.password}' ssh -o StrictHostKeyChecking=no ${params.username}@${params.server_dns} 'ls'"
+                    sh "sshpass -p '${params.password}' ssh -o StrictHostKeyChecking=no -p ${params.port_number} ${params.username}@${params.server_dns} 'ls'"
                 }
             }
         }
@@ -63,7 +64,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh "sshpass -p '${params.password}' ssh -o StrictHostKeyChecking=no ${params.username}@${params.server_dns} 'sudo docker-compose up -d'"
+                    sh "sshpass -p '${params.password}' ssh -o StrictHostKeyChecking=no -p ${params.port_number} ${params.username}@${params.server_dns} 'sudo docker-compose up -d'"
                 }
             }
         }
@@ -76,7 +77,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh "sshpass -p '${params.password}' ssh -o StrictHostKeyChecking=no ${params.username}@${params.server_dns} 'sudo docker-compose down --rmi all --volumes --remove-orphans'"
+                    sh "sshpass -p '${params.password}' ssh -o StrictHostKeyChecking=no -p ${params.port_number} ${params.username}@${params.server_dns} 'sudo docker-compose down --rmi all --volumes --remove-orphans'"
                 }
             }
         }
