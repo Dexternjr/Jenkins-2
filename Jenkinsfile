@@ -6,6 +6,7 @@ pipeline {
         string(name: 'server_dns', defaultValue: '', description: 'DNS of the remote server')
         string(name: 'password', defaultValue: '', description: 'Password for remote server')
         string(name: 'branch_name', defaultValue: 'main', description: 'Branch name for GitHub')
+        string(defaultValue: '3007', name: 'PORT_NUMBER')
         booleanParam(name: 'delete_application', defaultValue: false, description: 'Delete application after deployment')
     }
     
